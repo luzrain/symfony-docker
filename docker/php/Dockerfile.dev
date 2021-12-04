@@ -1,0 +1,32 @@
+### base image
+FROM oraclelinux:8-slim
+
+# install php
+RUN curl -sS https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -o epel.rpm && \
+    curl -sS https://rpms.remirepo.net/enterprise/remi-release-8.rpm -o remi.rpm && \
+    rpm -Uvh epel.rpm remi.rpm && \
+    rm -rf epel.rpm remi.rpm && \
+    microdnf module enable php:remi-8.1 && \
+    microdnf install php-fpm php-cli php-opcache php-gd php-mbstring php-mysqlnd php-pdo php-pecl-apcu php-pecl-redis php-dom php-simplexml php-gmp php-intl php-sodium php-amqp php-zip php-pcntl php-posix
+
+# install additional programs
+RUN microdnf install supervisor cronie unzip && \
+    curl -sS https://getcomposer.org/installer | php -- --filename=composer --install-dir=/usr/local/bin/ && \
+    curl -sS https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o /usr/local/bin/wait-for-it.sh && \
+    chmod +x /usr/local/bin/wait-for-it.sh
+
+ENV APP_ENV dev
+ENV TZ Europe/Moscow
+ENV USERID 11001
+ENV USERNAME app
+ENV PATH="${PATH}:/mnt/app/bin"
+
+WORKDIR /mnt/app
+
+COPY ./etc/ /etc/
+COPY ./php.ini /etc/php.d/0-php.ini
+COPY ./entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]

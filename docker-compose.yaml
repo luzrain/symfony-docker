@@ -1,0 +1,26 @@
+services:
+  # Nginx
+  nginx:
+    build:
+      context: ./docker/nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./public:/mnt/app/public
+      - ./var/cache:/mnt/app/var/cache
+    restart: unless-stopped
+
+  # Application
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/mnt/app
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    depends_on:
+      - database
+      - redis
+      - rabbitmq
