@@ -19,14 +19,11 @@ ENV APP_ENV dev
 ENV TZ Europe/Moscow
 ENV USERID 11001
 ENV USERNAME app
-ENV PATH="${PATH}:/mnt/app/bin"
+ENV PATH="${PATH}:/app/bin"
 
-WORKDIR /mnt/app
-
+WORKDIR /app
 COPY ./etc/ /etc/
 COPY ./php.ini /etc/php.d/0-php.ini
 COPY ./entrypoint.sh /entrypoint.sh
-
 RUN chmod +x /entrypoint.sh
-
 CMD ["/entrypoint.sh"]

@@ -4,12 +4,8 @@ help: ## Показать справку
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z1-9_-]+:.*?## / {printf "  \033[32m%-16s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: start
-start: ## Сборка и запуск докер контейнеров (для dev)
+start: ## Сборка и запуск докер контейнеров (dev)
 	docker-compose -f docker-compose.yaml up -d --force-recreate --build
-
-.PHONY: start-prod
-start-prod: ## Сборка и запуск докер контейнеров (для production)
-	docker-compose up -d --force-recreate --build
 
 .PHONY: stop
 stop: ## Остановка докер контейнеров
@@ -20,7 +16,6 @@ clean: ## Удалить образы и директории
 	docker-compose rm --force --stop
 	rm -rf var/cache
 	rm -rf var/log
-	rm -rf var/rabbitmq
 	rm -rf vendor
 
 .PHONY: logs

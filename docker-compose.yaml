@@ -6,21 +6,17 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./public:/mnt/app/public
-      - ./var/cache:/mnt/app/var/cache
+      - ./public:/app/public
+      - ./var/cache:/app/var/cache
     restart: unless-stopped
 
-  # Application
+  # App
   app:
     build:
       context: ./docker/php
       dockerfile: Dockerfile.dev
     volumes:
-      - ./:/mnt/app
+      - ./:/app
     tmpfs:
       - /tmp
     restart: unless-stopped
-    depends_on:
-      - database
-      - redis
-      - rabbitmq

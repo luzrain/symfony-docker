@@ -1,4 +1,4 @@
-PATH=/usr/bin:/bin:/mnt/app/bin
+PATH=/usr/bin:/bin:/app/bin
 
 # Test
 #* * * * * root console app:test 1>/dev/null 2>/proc/1/fd/1

@@ -14,7 +14,7 @@ groupadd -g $USERID $USERNAME && useradd -u $USERID -g $USERNAME $USERNAME
 chown -R $USERNAME:$USERNAME /var/lib/php
 chown -R $USERNAME:$USERNAME /var/log/php-fpm
 
-chmod +x /mnt/app/bin/console
+chmod +x /app/bin/console
 
 if [ "$APP_ENV" = "dev" ]
 then
