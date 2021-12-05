@@ -1,0 +1,11 @@
+/.stfolder/
+/nbproject/
+/Makefile
+/node_modules/
+/vendor/
+/var/
+/.git*
+/.env.test
+/.dockerignore
+/.phpunit.result.cache
+/docker-compose*.yaml

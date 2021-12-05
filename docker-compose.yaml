@@ -1,22 +1,20 @@
+version: '3'
+
 services:
   # Nginx
   nginx:
     build:
-      context: ./docker/nginx
+      context: ./
+      dockerfile: docker/nginx/Dockerfile.prod
     ports:
       - 8080:80
-    volumes:
-      - ./public:/app/public
-      - ./var/cache:/app/var/cache
-    restart: unless-stopped
+    restart: always
 
   # App
   app:
     build:
-      context: ./docker/php
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./:/app
+      context: ./
+      dockerfile: docker/php/Dockerfile.prod
     tmpfs:
       - /tmp
-    restart: unless-stopped
+    restart: always

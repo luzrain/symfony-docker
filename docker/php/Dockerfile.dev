@@ -21,7 +21,7 @@ ENV USERID 11001
 ENV USERNAME app
 ENV PATH="${PATH}:/app/bin"
 
-WORKDIR /app
+WORKDIR /app/
 COPY ./etc/ /etc/
 COPY ./php.ini /etc/php.d/0-php.ini
 COPY ./entrypoint.sh /entrypoint.sh

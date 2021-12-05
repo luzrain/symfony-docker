@@ -5,7 +5,11 @@ help: ## Показать справку
 
 .PHONY: start
 start: ## Сборка и запуск докер контейнеров (dev)
-	docker-compose -f docker-compose.yaml up -d --force-recreate --build
+	docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --force-recreate --build
+
+.PHONY: start
+start-prod: ## Сборка и запуск докер контейнеров (dev)
+	docker-compose up -d --force-recreate --build
 
 .PHONY: stop
 stop: ## Остановка докер контейнеров
