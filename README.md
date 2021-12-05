@@ -1,5 +1,8 @@
 # Базовое symfony приложение для запуска в docker
 
+symfony version: `6.0.*`  
+php version: `8.1`  
+
 Для запуска приложения на компьютере должны быть установлены docker и docker-compose.  
 
  ### Makefile
