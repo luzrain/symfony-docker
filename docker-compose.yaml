@@ -1,20 +1,20 @@
-version: '3'
+version: "3.4"
 
 services:
-  # Nginx
-  nginx:
-    build:
-      context: ./
-      dockerfile: docker/nginx/Dockerfile.prod
-    ports:
-      - 8080:80
-    restart: always
-
   # App
   app:
     build:
       context: ./
-      dockerfile: docker/php/Dockerfile.prod
-    tmpfs:
-      - /tmp
-    restart: always
+      dockerfile: docker/php/Dockerfile
+      target: app_prod
+    restart: unless-stopped
+
+  # Nginx
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/nginx/Dockerfile
+      target: nginx_prod
+    ports:
+      - 8080:80
+    restart: unless-stopped

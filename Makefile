@@ -9,7 +9,7 @@ start: ## Сборка и запуск докер контейнеров (dev)
 
 .PHONY: start
 start-prod: ## Сборка и запуск докер контейнеров (dev)
-	docker-compose up -d --force-recreate --build
+	docker-compose -f docker-compose.yaml up -d --force-recreate --build
 
 .PHONY: stop
 stop: ## Остановка докер контейнеров
@@ -21,6 +21,11 @@ clean: ## Удалить образы и директории
 	rm -rf var/cache
 	rm -rf var/log
 	rm -rf vendor
+
+.PHONY: clean
+clean-full: ## Удалить образы и директории
+	rm -rf bin config public src var vendor .env composer.json composer.lock symfony.lock
+	docker-compose rm --force --stop
 
 .PHONY: logs
 logs: ## Показать логи

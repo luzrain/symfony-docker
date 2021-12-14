@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:alpine as base
 
 ENV TZ Europe/Moscow
 ENV USERID 11001
@@ -8,6 +8,13 @@ RUN addgroup -S -g ${USERID} ${USERNAME} && adduser -S -H -u ${USERID} ${USERNAM
 
 COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/nginx/app.conf /etc/nginx/conf.d/default.conf
-COPY ./public/ /app/public/
 
 CMD ["nginx", "-g", "daemon off;"]
+
+### nginx prod image
+FROM base as nginx_prod
+COPY ./public/ /app/public/
+
+### nginx dev image
+FROM base as nginx_dev
+

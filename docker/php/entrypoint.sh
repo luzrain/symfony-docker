@@ -1,33 +1,35 @@
 #!/usr/bin/env bash
 
-#configure php-fpm
-sed -i -e "s/user = .*/user = $USERNAME/" /etc/php-fpm.d/www.conf && \
-sed -i -e "s/group = .*/group = $USERNAME/" /etc/php-fpm.d/www.conf && \
-sed -i -e 's/listen = .*/listen = 9000/' /etc/php-fpm.d/www.conf && \
-sed -i -e 's/listen.allowed_clients = .*/;/' /etc/php-fpm.d/www.conf && \
-sed -i -e 's/php_admin_value\[error_log\] = .*/php_admin_value\[error_log\] = \/dev\/stderr/' /etc/php-fpm.d/www.conf && \
-echo "catch_workers_output = yes" >> /etc/php-fpm.d/www.conf && \
-echo "decorate_workers_output = no" >> /etc/php-fpm.d/www.conf && \
-sed -i -e 's/pid = .*/pid = \/run\/php-fpm.pid/' /etc/php-fpm.conf && \
-sed -i -e 's/error_log = .*/error_log = \/dev\/stderr/' /etc/php-fpm.conf
+USERNAME=app
+USERID=11001
+
 groupadd -g $USERID $USERNAME && useradd -u $USERID -g $USERNAME $USERNAME
 chown -R $USERNAME:$USERNAME /var/lib/php
 chown -R $USERNAME:$USERNAME /var/log/php-fpm
 
-chmod +x /app/bin/console
-
-if [ "$APP_ENV" = "dev" ]
-then
-    echo "START IN DEV MODE"
-    rm /etc/supervisord.d/*.prod.conf
-    composer install --no-ansi --no-interaction
-else
-    echo "START IN PRODUCTION MODE"
-    rm /etc/supervisord.d/*.dev.conf
+# The first time volumes are mounted, the project needs to be recreated
+if [ ! -f composer.json ]; then
+    composer create-project symfony/skeleton /tmp/install --no-ansi --no-progress --no-interaction --no-install --prefer-dist
+    composer require "php:>=8.1.0" --working-dir=/tmp/install --no-ansi --no-progress --no-interaction --no-install
+    composer config --json extra.symfony.docker true --working-dir=/tmp/install
+    cp /tmp/install/composer.json .
+    rm -rf /tmp/install
 fi
 
-console cache:clear
-#wait-for-it.sh --timeout=300 database:3306
+chmod +x /app/bin/console
+
+if [ "$APP_ENV" != "prod" ]; then
+    composer install --no-ansi --no-progress --no-interaction --prefer-dist
+    rm -rf /etc/supervisord.d/*.prod.conf
+fi
+
+if [ "$APP_ENV" = "dev" ]; then
+    console cache:clear
+fi
+
+setfacl -R -d -m u:$USERNAME:rwx var
+setfacl -R -m u:$USERNAME:rwx var
+
 #console doctrine:migration:migrate --no-ansi --no-interaction
 
 supervisord

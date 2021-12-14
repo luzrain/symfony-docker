@@ -1,24 +1,16 @@
-version: '3'
+version: "3.4"
 
 services:
-  # Nginx
-  nginx:
-    build:
-      context: ./docker/nginx
-      dockerfile: Dockerfile.dev
-    ports:
-      - 8080:80
-    volumes:
-      - ./public:/app/public
-    restart: unless-stopped
-
   # App
   app:
     build:
-      context: ./docker/php
-      dockerfile: Dockerfile.dev
+      target: app_dev
     volumes:
-      - ./:/app
-    tmpfs:
-      - /tmp
-    restart: unless-stopped
+      - ./:/app:rw,cached
+
+  # Nginx
+  nginx:
+    build:
+      target: nginx_dev
+    volumes:
+      - ./public:/app/public:ro
