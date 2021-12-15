@@ -1,43 +1,17 @@
-# Базовое symfony приложение для запуска в docker
+# Docker environment for symfony application
 
-symfony version: `6.0.*`  
-php version: `8.1`  
+A dockerized environment for [Symfony](https://github.com/symfony/symfony) PHP framework. Ready for production and development.
 
-Для запуска приложения на компьютере должны быть установлены docker и docker-compose.  
+## Getting started
 
- ### Makefile
+- Install [Docker Compose](https://docs.docker.com/compose/install/)
+- Run `make start`
+- Open `http://localhost:8080`
+- Run `make stop` to stop the Docker containers.
+- Run `make help` to show all available commands.
 
-```bash
-  make help
-```
-Показать справку  
+## Features
 
-```bash
-  make start
-```
-Сборка и запуск докер контейнеров (для dev окружения)  
-
-```bash
-  make start-prod
-```
-Сборка и запуск докер контейнеров (для production окружения)  
-
-```bash
-  make stop
-```
-Остановка докер контейнеров  
-
-```bash
-  make clean
-```
-Удалить образы и очистить директории  
-
-```bash
-  make logs
-```
-Показать логи  
-
-```bash
-  make sh
-```
-Войти в консоль контейнера с приложением  
+- PHP 8.1
+- Nginx web server
+- Supervisor for manage [messenger](https://symfony.com/doc/current/messenger.html) consumers, cron and php-fpm
