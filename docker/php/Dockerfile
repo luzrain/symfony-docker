@@ -1,13 +1,14 @@
 ### base php image
 FROM oraclelinux:8-slim as base
 
-# install php
 RUN curl -sS https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -o epel.rpm && \
     curl -sS https://rpms.remirepo.net/enterprise/remi-release-8.rpm -o remi.rpm && \
     rpm -Uvh epel.rpm remi.rpm && \
-    rm -rf epel.rpm remi.rpm && \
-    microdnf module enable php:remi-8.1 && \
-    microdnf install php-fpm php-cli php-opcache php-gd php-mbstring php-mysqlnd php-pdo php-pecl-apcu php-pecl-redis php-dom php-simplexml php-gmp php-intl php-sodium php-amqp php-zip php-pcntl php-posix
+    rm -rf epel.rpm remi.rpm
+
+# install php
+RUN microdnf module enable php:remi-8.1 && \
+    microdnf install php php-apcu php-mbstring php-simplexml php-pdo php-mysqlnd php-zip php-intl
 
 # install composer
 RUN microdnf install unzip && \
