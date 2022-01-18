@@ -16,33 +16,38 @@ RUN microdnf install unzip && \
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-### app image
-FROM base as app
-
 # install additional programs
 RUN microdnf install supervisor cronie
 
+ENV USERNAME app
+ENV USERID 11001
+ENV PATH "${PATH}:/app/bin"
+
+RUN groupadd -g $USERID $USERNAME && useradd -u $USERID -g $USERNAME $USERNAME && \
+    chown -R $USERNAME:$USERNAME /var/lib/php && \
+    chown -R $USERNAME:$USERNAME /var/log/php-fpm
+
+COPY ./docker/php/etc/ /etc/
+COPY ./docker/php/php.ini /etc/php.d/98-php.ini
+COPY ./docker/php/entrypoint.sh /entrypoint.sh
+
 RUN mkdir /app/
 WORKDIR /app/
-ENV PATH="${PATH}:/app/bin"
-COPY ./docker/php/etc/ /etc/
-COPY ./docker/php/php.ini /etc/php.d/998-php.ini
-COPY ./docker/php/entrypoint.sh /entrypoint.sh
+
 RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
 
 ### app prod image
-FROM app as app_prod
+FROM base as app_prod
 ENV APP_ENV prod
 COPY ./composer.* /app/
-COPY ./symfony.* /app/
 RUN composer install --no-ansi --no-progress --no-interaction --prefer-dist --no-scripts --no-autoloader --no-dev
 COPY . /app
 RUN composer dump-autoload --no-ansi --classmap-authoritative --no-scripts --no-dev && \
     php bin/console secrets:decrypt-to-local --force --env=prod && \
     composer dump-env prod
-COPY ./docker/php/php.prod.ini /etc/php.d/999-php.prod.ini
+COPY ./docker/php/php.prod.ini /etc/php.d/99-php.prod.ini
 
 ### app dev image
-FROM app as app_dev
+FROM base as app_dev
 ENV APP_ENV dev

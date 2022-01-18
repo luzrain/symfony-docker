@@ -1,6 +1,18 @@
 version: "3.4"
 
 services:
+  # Nginx
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/nginx/Dockerfile
+      target: nginx_prod
+    environment:
+      - TZ=Europe/Moscow
+    ports:
+      - 8080:80
+    restart: unless-stopped
+
   # App
   app:
     build:
@@ -9,14 +21,4 @@ services:
       target: app_prod
     environment:
       - TZ=Europe/Moscow
-    restart: unless-stopped
-
-  # Nginx
-  nginx:
-    build:
-      context: ./
-      dockerfile: docker/nginx/Dockerfile
-      target: nginx_prod
-    ports:
-      - 8080:80
     restart: unless-stopped

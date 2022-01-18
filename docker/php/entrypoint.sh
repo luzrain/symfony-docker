@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-USERNAME=app
-USERID=11001
-
-groupadd -g $USERID $USERNAME && useradd -u $USERID -g $USERNAME $USERNAME
-chown -R $USERNAME:$USERNAME /var/lib/php
-chown -R $USERNAME:$USERNAME /var/log/php-fpm
-
 # The first time volumes are mounted, the project needs to be recreated
 if [ ! -f "composer.json" ]; then
     composer create-project symfony/skeleton /tmp/install --no-ansi --no-progress --no-interaction --no-install --prefer-dist
@@ -17,7 +10,8 @@ if [ ! -f "composer.json" ]; then
 fi
 
 if [ "$APP_ENV" != "prod" ]; then
-    rm -rf /etc/supervisord.d/*.prod.conf
+    rm -f /etc/supervisord.d/*.prod.conf
+    rm -f /etc/php.d/*.prod.ini
 fi
 
 if [ "$APP_ENV" = "dev" ]; then

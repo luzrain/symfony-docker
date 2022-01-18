@@ -5,13 +5,13 @@ help: ## Show this help
 
 .PHONY: build
 build: ## Builds the docker images
-	docker-compose build --pull --no-cache
+	docker-compose build --pull
 
 .PHONY: start
 start: ## Start the containers
-	docker-compose up -d --force-recreate --build
+	docker-compose up -d
 
-.PHONY: start
+.PHONY: start-prod
 start-prod: ## Start the containers in produnction environment
 	docker-compose -f docker-compose.yaml up -d --force-recreate --build
 

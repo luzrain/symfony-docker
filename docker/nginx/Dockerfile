@@ -1,6 +1,5 @@
 FROM nginx:alpine as base
 
-ENV TZ Europe/Moscow
 ENV USERID 11001
 ENV USERNAME app
 
@@ -17,4 +16,3 @@ COPY ./public/ /app/public/
 
 ### nginx dev image
 FROM base as nginx_dev
-
